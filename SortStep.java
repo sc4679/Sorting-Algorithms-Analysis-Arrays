@@ -1,135 +1,125 @@
-import java.util.*;
+import java.util.Random;
 
-/**
- *  Driver program for the Sorts class.
- */
+class Sorts {
+    private int stepCount;
 
-public class SortStep{
-  private Scanner console;
-  private int [] myArray;
-  private Sorts mySorts;
-  private String listType;
+    public Sorts() {
+        stepCount = 0;
+    }
 
-  /**
-   *  Constructor for the SortStep object
-   */
-  public SortStep(){
-    console = new Scanner(System.in);
-    mySorts = new Sorts();
-    myArray = null;
-    listType = "Integer";
-  }
+    public void setStepCount(int count) {
+        stepCount = count;
+    }
 
-  /**
-   *  Asks the user to select a sorting algorithm, fills the array
-   *  with an amount of random integer data chosen by the user, calls
-   *  the sorting algorithm, and gives an option of printing out the
-   *  data after it has been sorted.
-   */
-  public void sortMenu(){
-    String choice;
+    public int getStepCount() {
+        return stepCount;
+    }
 
-    do{
-      System.out.println();
-      System.out.println("Sorting algorithm menu");
-      System.out.println();
-      System.out.println("(1) Bubble sort");
-      System.out.println("(2) Selection sort");
-      System.out.println("(3) Insertion sort");
-      System.out.println("(4) Recursive mergesort");
-      System.out.println("(5) Fill with Integers");
-      System.out.println("(Q) Quit");
-      System.out.println();
-      System.out.print("Choice ---> ");
-      choice = console.next() + " ";
-      if ('1' <= choice.charAt(0) && choice.charAt(0) < '6'){
-        System.out.println();
-
-        mySorts.setStepCount(0);
-
-        switch (choice.charAt(0)){
-            case '1':
-              resetArray();
-              mySorts.bubbleSort(myArray);
-              break;
-            case '2':
-              resetArray();
-              mySorts.selectionSort(myArray);
-              break;
-            case '3':
-              resetArray();
-              mySorts.insertionSort(myArray);
-              break;
-            case '4':
-              resetArray();
-              mySorts.mergeSort(myArray, myArray.length);
-              break;
-            case '5':
-        	  listType = "Integer";
-              break;              
+    public void bubbleSort(int[] arr) {
+        int n = arr.length;
+        for (int i = 0; i < n - 1; i++) {
+            for (int j = 0; j < n - i - 1; j++) {
+                stepCount++;
+                if (arr[j] > arr[j + 1]) {
+                    int temp = arr[j];
+                    arr[j] = arr[j + 1];
+                    arr[j + 1] = temp;
+                }
+            }
         }
+    }
 
-        if ('1' <= choice.charAt(0) && choice.charAt(0) <= '4'){
-        	System.out.println();
-        	System.out.println("Array sorted to:");
-	        screenOutput();
-	        System.out.println();
-	        System.out.println("# steps = " + mySorts.getStepCount());
-	        System.out.println();
+    public void selectionSort(int[] arr) {
+        int n = arr.length;
+        for (int i = 0; i < n - 1; i++) {
+            int minIndex = i;
+            for (int j = i + 1; j < n; j++) {
+                stepCount++;
+                if (arr[j] < arr[minIndex]) {
+                    minIndex = j;
+                }
+            }
+            int temp = arr[minIndex];
+            arr[minIndex] = arr[i];
+            arr[i] = temp;
         }
-      }
-    } while (choice.charAt(0) != 'Q' && choice.charAt(0) != 'q');
-  }
-
-  /**
-   *  Initializes myArray with random integers in the range
-   *  1..largestInt
-   *
-   * @param  numInts     number of integers to generate (size of
-   *      myArray)
-   * @param  largestInt  largest possible random integer to create
-   */
-  private void fillArrayWithInts(){
-    
-    System.out.print("How many numbers do you wish to generate? ");
-    int numInts = console.nextInt();
-    System.out.print("Largest integer to generate? ");
-    int largestInt = console.nextInt();
-    
-    myArray = new int[numInts];
-
-    //TODO: create code that will put random numbers between 1 and largestInt, inclusive, into array
-    for(int i = 0; i < myArray.length; i++)
-    {
-      
-    }
-  }
-
-  /**
-   *  reset the array for the next sort
-   */
-  private void resetArray(){
-    if (myArray == null || listType.equals("Integer")){
-    	fillArrayWithInts();
     }
 
-    System.out.println();
-    System.out.println("Array reset to:");
-    screenOutput();
-  }
-
-  /**
-   *  prints out the contents of the array in tabular form, 12 columns
-   */
-  private void screenOutput(){
-    for (int loop = 0; loop < myArray.length; loop++){
-      if (loop % 12 == 0){
-        System.out.println();
-      }
-      System.out.print(myArray[loop] + "  ");
+    public void insertionSort(int[] arr) {
+        int n = arr.length;
+        for (int i = 1; i < n; i++) {
+            int key = arr[i];
+            int j = i - 1;
+            while (j >= 0 && arr[j] > key) {
+                stepCount++;
+                arr[j + 1] = arr[j];
+                j--;
+            }
+            arr[j + 1] = key;
+        }
     }
-    System.out.println();
-  }
 
-  
+    public void mergeSort(int[] arr, int n) {
+        stepCount = 0;
+        mergeSortHelper(arr, 0, n - 1);
+    }
+
+    private void mergeSortHelper(int[] arr, int left, int right) {
+        if (left < right) {
+            int mid = left + (right - left) / 2;
+            mergeSortHelper(arr, left, mid);
+            mergeSortHelper(arr, mid + 1, right);
+            merge(arr, left, mid, right);
+        }
+    }
+
+    private void merge(int[] arr, int left, int mid, int right) {
+        int n1 = mid - left + 1;
+        int n2 = right - mid;
+        int[] L = new int[n1];
+        int[] R = new int[n2];
+
+        for (int i = 0; i < n1; i++) L[i] = arr[left + i];
+        for (int j = 0; j < n2; j++) R[j] = arr[mid + 1 + j];
+
+        int i = 0, j = 0, k = left;
+        while (i < n1 && j < n2) {
+            stepCount++;
+            if (L[i] <= R[j]) {
+                arr[k++] = L[i++];
+            } else {
+                arr[k++] = R[j++];
+            }
+        }
+        while (i < n1) arr[k++] = L[i++];
+        while (j < n2) arr[k++] = R[j++];
+    }
+}
+
+public class SortingTest {
+    public static void main(String[] args) {
+        int[] sizes = {100, 200, 400, 800};
+        Random rand = new Random();
+        Sorts sorter = new Sorts();
+
+        System.out.println("| SORT        | 100   | 200   | 400   | 800   |");
+        System.out.println("------------------------------------------------");
+
+        for (String method : new String[]{"Bubble Sort", "Insertion Sort", "Selection Sort", "Merge Sort"}) {
+            System.out.printf("| %-11s |", method);
+            for (int size : sizes) {
+                int[] arr = new int[size];
+                for (int i = 0; i < size; i++) arr[i] = rand.nextInt(1000);
+                sorter.setStepCount(0);
+                switch (method) {
+                    case "Bubble Sort": sorter.bubbleSort(arr); break;
+                    case "Insertion Sort": sorter.insertionSort(arr); break;
+                    case "Selection Sort": sorter.selectionSort(arr); break;
+                    case "Merge Sort": sorter.mergeSort(arr, arr.length); break;
+                }
+                System.out.printf(" %-6d |", sorter.getStepCount());
+            }
+            System.out.println();
+        }
+    }
 }
